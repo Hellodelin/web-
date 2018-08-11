@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <title>站长工具</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link type="text/css" rel="stylesheet" href="style.css" />
+  <script>
+	function setOn(num){
+		for(var id = 1;id<=6;id++)
+		{
+			if(id==num)
+			{
+				document.getElementById("dt"+id).className="dt current";
+			}
+			else
+			{
+				document.getElementById("dt"+id).className="dt";
+			}
+		}
+	}
+
+  function clearOn(num){
+    for(var id = 1;id<=6;id++){
+      releaseOn(document.getElementById("dt"+id),"current");
+    }
+  }
+
+	function clear(id){
+		var v=document.getElementById(id);
+		/*实现js改变属性值触发事件*/
+		Object.defineProperty(v, '_value', {
+			configurable: true,
+			set: function(value) {
+				showclr("clr");
+				this.value = value;
+			},
+			get: function() {
+				return this.value;
+			}
+		});
+		v.value="";
+	}
+
+	function showclr(id){
+		var clr=document.getElementById("clr");
+		if (document.getElementById(id).value){
+			clr.style.display="block";
+		}else{
+			clr.style.display="none";
+		}
+	}
+
+	function del(id){
+		var e=document.getElementById(id);
+		e.remove(e.selectedIndex)
+	}
+
+	function clrall(){
+		var box=document.getElementById("tip-box");
+		/**类似于动态变化非undefine的observableList**/
+		var items=box.getElementsByTagName("li");
+		var size=items.length;
+
+		for (var i=0;i<size;i++){
+			var e=items[0];
+			box.removeChild(e);
+		}
+	}
+
+	function haveClass(e,name){
+		var all=e.className.split(' ');
+		for (var c in all){
+			if (all[c]==name){
+				return true;
+			}
+		}
+		return false;
+	}
+
+  function releaseOn(e,flag){
+    var all=e.className.split(' ');
+    e.className="";
+    for (var i in all){
+      if (all[i]!=flag){
+        e.className+=all[i]+" ";
+      }
+    }
+  }
+
+	function switchsearchtab(e){
+    var ids=["site-tab","key-tab"];
+    switchtab(e,"on",ids);
+    var insite=document.getElementById("insite");
+    var inkey=document.getElementById("inkey");
+    if (e.id=="site-tab"){
+      insite.style.width="570px";
+      inkey.style.display="none";
+    }else if(e.id=="key-tab"){
+      insite.style.width="400px";
+      inkey.style.display="block";
+      inkey.style.width="170px";
+    }
+	}
+
+  function switchtooltab(e){
+    var ids=["seo-tab","other-tab"];
+    switchtab(e,"tool-tab-current",ids);
+    var seo=document.getElementById("seo-nav");
+    var other=document.getElementById("other-nav");
+    if (e.id=="seo-tab"){
+      seo.style.display="block";
+      other.style.display="none";
+    }else if(e.id=="other-tab"){
+      seo.style.display="none";
+      other.style.display="block";
+    }
+  }
+
+  function switchtab(e,flag,ids){
+    if (!haveClass(e,flag)){
+      for(var i in ids){
+        var id=ids[i];
+        var ee=document.getElementById(id);
+        if (haveClass(ee,flag)){
+          releaseOn(ee,flag);
+        }
+      }
+      e.className+=" "+flag;
+    }
+
+  }
+
+	function extend(e){
+		if (!document.getElementsByClassName("key-tab on")[0]){
+			return;
+		}
+		var cn=e.id;
+		if (cn=="insite"){
+			var keyin=document.getElementById('inkey');
+			var sitein=document.getElementById('insite');
+			sitein.style.width="400px";
+			keyin.style.width="170px";
+		}else if(cn=="inkey"){
+			var keyin=document.getElementById('inkey');
+			var sitein=document.getElementById('insite');
+			keyin.style.width="400px";
+			sitein.style.width="170px";
+		}
+	}
+
+	window.onload=function(){
+		var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+		var target = document.querySelector('#tip-box');
+		var observer = new MutationObserver(function(mutations) {
+				mutations.forEach(function(mutation) {
+				if(mutation.type=="childList"){
+					var box=document.getElementById("tip-box");
+					/**类似于动态变化非undefine的observableList**/
+					var items=box.getElementsByTagName("li");
+					if (items.length==0){
+						document.getElementById("empty-tip").style.display="block";
+						document.getElementById("clrall").style.display="none";
+					}else{
+						document.getElementById("empty-tip").style.display="none";
+						document.getElementById("clrall").style.display="block";
+					}
+				}
+			});
+		});
+		var config = { attributes: true, childList: true, characterData: true }
+		observer.observe(target, config);
+	}
+  </script>
+ </head>
+ <body>
+    <!--导航栏一般需要一个容器，设置width:100%适应浏览器的大小变化-->
+   <div  class="top-container container">
+     <!--导航栏wrapper一般设置一个固定大小这样子可以通过margin:auto;实现导航栏水平居中
+     由于顶层容器是适应浏览器变化宽度，所以可以保持水平导航栏自适应浏览器窗口宽度保持居中-->
+    <div class="top-wrapper wrapper">
+      <!--这个是普通导航栏的容器，就是除了"立即登陆"和"注册新账号"-->
+      <div class="nav top-left-nav">
+        <!--开始实现列表-->
+       <ul>
+        <li  class="first-nav"><span>站长之家</span></li>
+        <li  class="first-nav"><span>站长论坛</span></li>
+        <li class="dropdown first-nav"><span>站长工具<i class="icon icon-arrow"></i></span>
+         <ul class="sec-nav">
+          <li><a href="#">ALEXA排名查询</a></li>
+          <li><a href="#">百度权重查询</a></li>
+          <li><a href="#">SEO概况查询</a></li>
+          <li><a href="#">友情链接查询</a></li>
+          <li><a href="#">Google PR查询</a></li>
+          <li><a href="#">Whois信息查询</a></li>
+          <li><a href="#">域名备案查询</a></li>
+         </ul> </li>
+        <li class="dropdown  first-nav"><span>站长素材<i class="icon icon-arrow"></i></span>
+         <ul class="sec-nav">
+          <li><a href="#">字体下载</a></li>
+          <li><a href="#">高清壁纸</a></li>
+          <li><a href="#">简历模板</a></li>
+          <li><a href="#">高清图片</a></li>
+          <li><a href="#">矢量素材</a></li>
+          <li><a href="#">PSD素材</a></li>
+          <li><a href="#">PPT模板</a></li>
+         </ul> </li>
+        <li class="dropdown  first-nav"><span>网站排行<i class="icon icon-arrow"></i></span>
+         <ul class="sec-nav">
+          <li><a href="#">行业网站排名</a></li>
+          <li><a href="#">地区网站排名</a></li>
+         </ul> </li>
+        <li  class="first-nav"><span>手机版</span>
+         <ul class="sec-nav">
+          <li><a href="#"><span><img src="2.jpg" /></span></a></li>
+         </ul> </li>
+        <li  class="first-nav"><span>工具旧版</span></li>
+        <li class="new  first-nav"><span>SEO工具包<i class="icon icon-new"></i></span></li>
+       </ul>
+      </div>
+       <div class="nav user-nav">
+        <ul>
+         <li class="first-nav"><a href="#">立即登录</a></li>
+         <li class="first-nav"><a href="#">立即注册</a></li>
+        </ul>
+      </div>
+    </div>
+   </div>
+   <div id="logo">
+    <div id="logo-wrapper">
+      <a href="#"><img src="logo.png" /></a>
+    </div>
+  </div>
+   <div class="container nav-blue-container">
+     <div class="nav-blue-wrapper wrapper">
+     <div class="nav nav-blue">
+     <ul onmouseout="clearOn()">
+      <ul class="w114 first-nav" onmouseover="setOn(1)">
+       <li id="dt1" class="dt"><a href="#">首页</a> </li>
+       <li class="dd"><a href="#">站长词库</a></li>
+      </ul>
+      <ul class="w200  first-nav" onmouseover="setOn(2)">
+       <li id="dt2" class="dt" onmouseover="setOn(2)"><a href="#">域名/IP类</a> </li>
+       <li class="dd"><a href="#">过期域名查询</a> <a href="#">WhoiS查询</a> <a href="#">IP 查询</a> <a href="#">同IP网站查询</a> <a href="#">DNS查询</a> </li>
+      </ul>
+      <ul class="w240  first-nav" onmouseover="setOn(3)">
+       <li id="dt3" class="dt" onmouseover="setOn(3)"><a href="#">网站信息查询</a> </li>
+       <li class="dd"> <a href="http://alexa.chinaz.com" target="_self">Alexa排名</a> <a class="rig" href="http://icp.chinaz.com" target="_self">网站备案查询</a> <a href="http://tool.chinaz.com/webdetect/" target="_self">网页检测</a> <a class="rig" href="http://tool.chinaz.com/pagestatus/" target="_self">HTTP状态查询</a> <a href="http://tool.chinaz.com/Tools/pagecode.aspx" target="_self">查看网页源代码</a> <a class="rig" href="http://tool.chinaz.com/tools/robot.aspx" target="_self">机器人模拟抓取</a> <a href="http://tool.chinaz.com/robots/" target="_self">robots.txt生成</a> <a class="rig" href="http://mobile.chinaz.com/fiturl_baidu.html" target="_self">移动适配生成</a> <a href="http://tool.chinaz.com/sitespeed" target="_self">网站速度测试</a> <a class="rig" href="http://ping.chinaz.com/" target="_self">ping测试</a> <a href="http://mobile.chinaz.com/" target="_self">Wap适配</a> <a class="rig" href="http://tool.chinaz.com/Gzips/" target="_self">网站GZIP压缩</a> </li>
+      </ul>
+      <ul class="w240  first-nav" onmouseover="setOn(4)">
+       <li id="dt4" class="dt" onmouseover="setOn(4)"><a href="#">SEO查询</a></li>
+       <li class="dd"> <a href="http://seo.chinaz.com" target="_self">SEO综合查询</a> <a class="rig" href="http://wapseo.chinaz.com" target="_self">移动SEO查询</a> <a href="http://link.chinaz.com" target="_self">友情链接检测</a> <a class="rig" href="http://outlink.chinaz.com" target="_self">反链查询</a> <a href="http://tool.chinaz.com/shoulu/" target="_self">收录查询</a> <a class="rig" href="http://tool.chinaz.com/baidu/metadig.aspx" target="_self">META信息挖掘</a> <a href="http://pr.chinaz.com" target="_self">PR查询</a> <a class="rig" href="http://tool.chinaz.com/kws/" target="_self">关键词排名查询</a> <a href="http://ciku.chinaz.com/words" target="_self">关键词挖掘</a> <a class="rig" href="http://tool.chinaz.com/kwevaluate" target="_self">关键词优化分析</a> <a href="http://tool.chinaz.com/websitepk.aspx" target="_self">竞争网站分析</a> <a class="rig" href="http://tool.chinaz.com/seocheck" target="_self">SEO优化建议</a> </li>
+      </ul>
+      <ul class="w200  first-nav" onmouseover="setOn(5)">
+       <li id="dt5" class="dt" onmouseover="setOn(5)"><a href="#">权重查询</a></li>
+       <li class="dd"> <a href="http://rank.chinaz.com" target="_self">百度权重查询</a> <a href="http://rank.chinaz.com/baidumobile" target="_self">百度移动权重查询</a> <a href="http://rank.chinaz.com/sorank" target="_self">360权重查询</a> <a href="http://rank.chinaz.com/rank360" target="_self">360移动权重查询</a> <a href="http://index.chinaz.com/bid" target="_self">关键词推广创意查询</a> <a href="http://index.chinaz.com/" target="_self">关键词指数</a> </li>
+      </ul>
+      <ul class="w200  first-nav" onmouseover="setOn(6)">
+       <li id="dt6" class="dt" onmouseover="setOn(6)"><a href="#">辅助工具</a> </li>
+       <li class="dd"> <a href="http://tool.chinaz.com/Tools/textencrypt.aspx" target="_self">加密解密</a> <a href="http://tool.chinaz.com/Tools/Unicode.aspx" target="_self">编码转换</a> <a href="http://tool.chinaz.com/Tools/JsCodeConfusion.aspx" target="_self">压缩格式化</a> <a href="http://tool.chinaz.com/Tools/onlinecolor.aspx" target="_self">配色工具</a> <a href="http://tool.chinaz.com/port/" target="_self">端口扫描</a> <a href="http://tool.chinaz.com/Tracert/" target="_self">路由器追踪</a> </li>
+      </ul>
+     </ul>
+    </div>
+  </div>
+  </div>
+  <div id="info-container">
+   <div id="info">
+    <a href="#">ip查询</a>-你的
+    <a href="#">IP：222.168.40.23 </a>来自
+    <a href="">吉林省长春市 吉林大学</a>
+   </div>
+   <div id="download-nav">
+    <a id="d-client" href="#"><i class="icon d-c"></i>客户端下载</a>
+    <a id="d-ie" href="#"><i class="icon d-ie"></i>IE、傲游插件</a>
+    <a id="d-sug" href="#"><i class="icon d-sug"></i>意见建议</a>
+   </div>
+  </div>
+  <div id="search-container">
+   <a href="#" class="vip-tag"></a>
+   <div id="search-tab-wrapper">
+    <div id="search-tab">
+     <a class="site-tab on" href="javascript:void(0)" onclick="switchsearchtab(this);return false;" id="site-tab">网址</a>
+     <a href="javascript:void(0);" onclick="switchsearchtab(this);return false;" class="key-tab" id="key-tab">关键词</a>
+    </div>
+   </div>
+   <div id="search-input">
+    <div id="input-box">
+     <span class="insite-wrapper"> <i class="icon icon-search"></i> <input type="search" id="insite" oninput="showclr('insite')" onfocus="extend(this)" placeholder="请输入网址" /> <a href="javascript:clear('insite');" class="icon icon-clr" title="清空" id="clr"></a> </span>
+     <span> <input type="search" id="inkey" onfocus="extend(this)" placeholder="请输入关键字" /> </span>
+    </div>
+    <div id="history-box">
+     <ul class="dropdown">
+      <span>查询记录<i class="icon icon-arrow"></i></span>
+      <div id="tip-box-container">
+       <div id="tip-box">
+        <span id="empty-tip">无记录</span>
+        <li id="ht1">关键字<a href="javascript:del('ht1');" class="icon icon-delht" title="删除"></a></li>
+        <li id="ht2">网址<a href="javascript:del('ht2');" class="icon icon-delht" title="删除"></a></li>
+        <li id="ht3">站长工具<a href="javascript:del('ht3');" class="icon icon-delht" title="删除"></a></li>
+        <li id="ht4">CSS导航<a href="javascript:del('ht4');" class="icon icon-delht" title="删除"></a></li>
+        <a id="clrall" href="javascript:clrall();"><i class="icon icon-clrall"></i>清空记录</a>
+       </div>
+      </div>
+     </ul>
+    </div>
+   </div>
+   <div id="key-box">
+    <div id="key-wrapper">
+     <a href="#">百度排名</a>
+     <a href="#">360排名</a>
+     <a href="#" class="new">行业词库<i class="icon icon-new"></i></a>
+     <a href="#">关键字挖掘</a>
+     <a href="#">关键字密度</a>
+     <a href="#">百度挖掘</a>
+     <a href="#" class="new">竞价查询<i class="icon icon-new"></i></a>
+     <a href="#">指数查询</a>
+     <a href="#">优化分析</a>
+     <a href="#">360挖掘</a>
+     <a href="#">即时查询</a>
+     <a class="more" href="#">更多工具<i class="icon icon-more"></i></a>
+    </div>
+   </div>
+  </div>
+  <div id="tools-container">
+	<div id="tool-tab">
+		<span id="seo-tab" class="tool-tab-current" onmouseover="switchtooltab(this)">SEO相关</span>
+		<span id="other-tab"  onmouseover="switchtooltab(this)">其他工具相关</span>
+	</div>
+	<ul class="h-list seo-list" id="seo-nav">
+		<li>
+			<h5 class="s-title">域名类</h5>
+			<p class="plist">
+                <a href="#" target="_self">WHOIS查询</a>
+                <a href="#" target="_self">DNS查询</a>
+                <a href="#" target="_self">过期域名查询</a>
+                <a href="#" target="_self">NsLookup查询</a>
+                <a href="#" target="_self">域名删除时间</a>
+                <a href="#" target="_self">备案查询</a>
+                <a href="#" target="_self">删除域名归档</a>
+                <a href="#" target="_self">备案批量查询</a>
+            </p>
+		</li>
+		<li class="fl bor-r1s">
+            <h5 class="fz14 fwnone col-blue02 pb5">IP类</h5>
+            <p class="plist">
+                <a href="http://ip.chinaz.com" target="_blank">IP 查询</a>
+                <a href="http://ip.chinaz.com/ipbatch" target="_blank">IP 批量</a>
+                <a href="http://tool.chinaz.com/Same/" target="_blank">同IP网站查询</a>
+                <a href="http://tool.chinaz.com/ipwhois/" target="_blank">IP WHOIS查询</a>
+                <a href="http://tool.chinaz.com/port/" target="_blank">端口扫描</a>
+            </p>
+        </li>
+		<li class="fl bor-r1s">
+            <h5 class="fz14 fwnone col-blue02 pb5">百度相关</h5>
+            <p class="plist">
+                <a href="http://tool.chinaz.com/keywords" target="_blank">关键词排名</a>
+                <a href="http://tool.chinaz.com/baidu/words.aspx" target="_blank">关键词挖掘</a>
+                <a href="http://outlink.chinaz.com/" target="_blank">反链查询</a>
+                <a href="http://rank.chinaz.com" target="_blank">权重查询</a>
+                <a href="http://tool.chinaz.com/baidu/" target="_blank">收录查询</a>
+                <a href="http://tool.chinaz.com/baidu/entry" target="_blank">收录率查询</a>
+                <a href="http://tool.chinaz.com/kwevaluate" target="_blank">关键词优化分析</a>
+                <a href="http://tool.chinaz.com/baidu/metadig.aspx" target="_blank">Meta信息挖掘</a>
+            </p>
+        </li>
+		<li class="fl bor-r1s">
+            <h5 class="fz14 fwnone col-blue02 pb5">测速/监控</h5>
+            <p class="plist">
+                <a href="http://ping.chinaz.com" target="_blank">PING检测</a>
+                <a href="http://tool.chinaz.com/Tools/webcheck.aspx" target="_blank">网站被黑检测</a>
+                <a href="http://tool.chinaz.com/speedtest.aspx" target="_blank">国内网站测速</a>
+                <a href="http://tool.chinaz.com/history/" target="_blank">网站历史记录</a>
+                <a href="http://tool.chinaz.com/speedworld.aspx" target="_blank">海外网站测速</a>
+                <a href="http://tool.chinaz.com/history/" target="_blank">SEO历史记录</a>
+                <a href="http://tool.chinaz.com/speedcom.aspx" target="_blank">国内网速对比</a>
+                <a href="http://alexa.chinaz.com/alexa_history.aspx" target="_blank">ALexa历史报告</a>
+            </p>
+        </li>
+		<li class="fl bor-r1s">
+            <h5 class="fz14 fwnone col-blue02 pb5">网页相关</h5>
+            <p class="plist">
+                <a href="http://tool.chinaz.com/webdetect/" target="_blank">网页检测</a>
+                <a href="http://tool.chinaz.com/webscan" target="_blank">网站安全检测</a>
+                <a href="http://tool.chinaz.com/Links/" target="_blank">死链检测</a>
+                <a href="http://tool.chinaz.com/Gzips/" target="_blank">网站GZIP压缩</a>
+                <a href="http://tool.chinaz.com/pagestatus/" target="_blank">网页状态检测</a>
+                <a href="http://tool.chinaz.com/Tools/Density.aspx" target="_blank">关键词密度分析</a>
+                <a href="http://tool.chinaz.com/Tools/MetaCheck.aspx" target="_blank">META信息查询</a>
+                <a href="http://tool.chinaz.com/Tools/PageCode.aspx" target="_blank">查看网页源代码</a>
+            </p>
+        </li>
+	</ul>
+	<ul class="h-list other-list" id="other-nav">
+		<li class="fl bor-r1s">
+            <h5 class="fz14 fwnone col-blue02 pb5">配色/在线汉字</h5>
+            <p class="plist">
+                <a href="http://tool.chinaz.com/Tools/cj" target="_blank">中日传统色彩</a>
+                <a href="http://tool.chinaz.com/Tools/pinyindictionary.aspx" target="_blank">拼音字典</a>
+                <a href="http://tool.chinaz.com/Tools/img" target="_blank">传图识色</a>
+                <a href="http://tool.chinaz.com/Tools/word_spell.aspx" target="_blank">汉字拼音</a>
+                <a href="http://tool.chinaz.com/Tools/web" target="_blank">WEB安全色</a>
+                <a href="http://tool.chinaz.com/Tools/lowercase-uppercase.aspx" target="_blank">英文大小写</a>
+                <a href="http://tool.chinaz.com/Tools/use" target="_blank">网页常用色彩</a>
+                 <a href="http://tool.chinaz.com/Tools/gb_big.aspx" target="_blank">繁/简/火星文</a>
+            </p>
+        </li>
+		<li class="fl bor-r1s">
+            <h5 class="fz14 fwnone col-blue02 pb5">WEB相关</h5>
+            <p class="plist">
+                <a href="http://tool.chinaz.com/htmlcheck.aspx" target="_blank">Html标签检测</a>
+                <a href="http://tool.chinaz.com/Tools/httptest.aspx" target="_blank">Http接口测试</a>
+                <a href="http://tool.chinaz.com/Tools/htmlchar.aspx" target="_blank">Html特殊符号</a>
+                <a href="http://tool.chinaz.com/Tools/regexgenerate" target="_blank">正则表达式生成</a>
+                <a href="http://tool.chinaz.com/Tools/cssdesigner.aspx" target="_blank">Css在线编辑</a>
+                <a href="http://tool.chinaz.com/webscan" target="_blank">网站安全检测</a>
+                <a href="http://tool.chinaz.com/Tools/pagecode.aspx" target="_blank">查看网页源代码</a>
+                <a href="http://tool.chinaz.com/Tools/wordcounter" target="_blank">在线字符统计</a>
+            </p>
+        </li>
+		<li class="fl bor-r1s">
+            <h5 class="fz14 fwnone col-blue02 pb5">加密解密</h5>
+            <p class="plist">
+				<a href="http://tool.chinaz.com/Tools/md5.aspx" target="_blank">MD5加密</a>
+				<a href="http://tool.chinaz.com/Tools/jscodeconfusion.aspx" target="_blank">Js代码混淆</a>
+				<a href="http://tool.chinaz.com/Tools/escape.aspx" target="_blank">Escape加/解密</a>
+				<a href="http://tool.chinaz.com/Tools/jsformat.aspx" target="_blank">Js/Html格式化</a>
+				<a href="http://tool.chinaz.com/Tools/urlcrypt.aspx" target="_blank">Url16进制</a>
+				<a href="http://tool.chinaz.com/js.aspx" target="_blank">Js混淆压缩</a>
+				<a href="http://tool.chinaz.com/Tools/thunder_flashget.aspx" target="_blank">Url加/解密</a>
+				<a href="http://tool.chinaz.com/Tools/textencrypt.aspx" target="_blank">文字加/解密</a>
+			</p>
+        </li>
+		<li class="fl bor-r1s">
+            <h5 class="fz14 fwnone col-blue02 pb5">单位换算</h5>
+            <p class="plist">
+                <a href="http://tool.chinaz.com/Tools/angle" target="_blank">角度换算</a>
+                <a href="http://tool.chinaz.com/Tools/time" target="_blank">时间换算</a>
+                <a href="http://tool.chinaz.com/Tools/heat" target="_blank">热量换算</a>
+                <a href="http://tool.chinaz.com/Tools/length" target="_blank">长度换算</a>
+                <a href="http://tool.chinaz.com/Tools/area" target="_blank">面积换算</a>
+                <a href="http://tool.chinaz.com/Tools/calculator" target="_blank">计算器</a>
+                <a href="http://tool.chinaz.com/Tools/datastore" target="_blank">数据存储</a>
+                <a href="http://tool.chinaz.com/Tools/subnetmask" target="_blank">子网掩码</a>
+            </p>
+        </li>
+		<li class="fl">
+            <h5 class="fz14 fwnone col-blue02 pb5">编码转换</h5>
+            <p class="plist">
+                <a href="http://tool.chinaz.com/Tools/unicode.aspx" target="_blank">Unicode</a>
+                <a href="http://tool.chinaz.com/Tools/html_ubb.aspx" target="_blank">Html/UBB</a>
+                <a href="http://tool.chinaz.com/Tools/unixtime.aspx" target="_blank">Unix时间戳</a>
+                <a href="http://tool.chinaz.com/Tools/urlencode.aspx" target="_blank">UrlEncode</a>
+                <a href="http://tool.chinaz.com/Tools/native_ascii.aspx" target="_blank">NATIVE/ASCII</a>
+                <a href="http://tool.chinaz.com/qrcode" target="_blank">二维码生成</a>
+                <a href="http://tool.chinaz.com/Tools/utf-8.aspx" target="_blank">UTF-8编码</a>
+                <a href="http://tool.chinaz.com/tools/html_js.aspx" target="_blank">HTML/JS转换</a>
+            </p>
+        </li>
+	</ul>
+  </div>
+  <div id="empty-container">
+    <div id="empty-wrapper"></div>
+  </div>
+  <div id="footer-container">
+    <div id="footer-wrapper">
+      <p class="footer-link">
+        <a href="http://www.chinaz.com/aboutus/index.html" target="_blank">关于站长之家</a>
+        |
+        <a href="http://ww.chinaz.com/aboutus/contact.php" target="_blank">联系我们	</a>
+        |
+        <a href="http://www.chinaz.com/aboutus/ad.html" target="_blank">广告服务</a>
+        |
+        <a href="http://www.chinaz.com/aboutus/link.html" target="_blank">友情链接</a>
+        |
+        <a href="http://www.chinaz.com/aboutus/events.html" target="_blank">网站动态</a>
+        |
+        <a href="http://www.chinaz.com/aboutus/announce.html" target="_blank">版权声明</a>
+        |
+        <a href="http://www.chinaz.com/aboutus/join.html" target="_blank">人才招聘</a>
+        |
+        <a href="http://www.chinaz.com/aboutus/help.html" target="_blank">帮助</a>
+      </p>
+      <p class="info">
+        <span>© CopyRight 2002-2018, CHINAZ.COM, Inc.All Rights Reserved.</span><span>闽ICP备08105208号</span><span>增值电信业务经营许可证闽B2-20120007号</span><a href="http://www.wy.cn" rel="nofollow" target="_blank">服务器资源由唯一网络赞助</a></p>
+
+    </div>
+  </div>
+  </body>
+</html>
