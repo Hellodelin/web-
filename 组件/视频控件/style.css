@@ -1,0 +1,85 @@
+
+.video-controller{
+  height: 140px;
+  width: 220px;
+  padding:0px;
+  position: relative;
+}
+
+.video-cover{
+  height: 140px;
+  width: 220px
+}
+
+
+.video-shadown{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  filter: alpha(opacity=25);
+  opacity: .25;
+  -webkit-transition: .4s;
+  transition: .4s;
+  }
+
+
+.video-controller:hover .video-shadown{
+  filter: alpha(opacity=50);
+  opacity: .50;
+}
+
+
+.video-title{
+  position: absolute;
+  bottom: 0px;
+  left:0px;
+  line-height: 26px;
+  height: 26px;
+  font-size: 12px;
+  color: #fff;
+  width: 100%;
+  padding: 0px 8px;
+}
+
+.video-title-content{
+  position: relative;
+  /*文字溢出部分使用...代替
+  *需要配合overflow: hidden; 隐藏溢出部分
+  *white-space: nowrap; 禁止换行
+  */
+  text-overflow: ellipsis;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  float: left;
+  line-height: 26px;
+  width: 90px;
+}
+
+.view-content{
+  float: right;
+  position: relative;
+  text-align: center;
+  height: 26px;
+  right:20px;
+}
+
+.icon{
+  color: #fff;
+}
+
+.icon-view{
+  position: relative;
+  text-align: center;
+  margin-right: 5px;
+}
+
+.icon-play{
+  position: absolute;
+  left:95px;
+  top:60px;
+  font-size:28px;
+}

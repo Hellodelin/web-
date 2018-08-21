@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>百度百科</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+    .video-controller{
+      height: 140px;
+      width: 220px;
+      padding:0px;
+      position: relative;
+    }
+
+    .video-controller:hover .video-shadown{
+      filter: alpha(opacity=50);
+      opacity: .50;
+    }
+
+    .video-cover{
+      height: 140px;
+      width: 220px
+    }
+
+    .video-shadown{
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      filter: alpha(opacity=25);
+      opacity: .25;
+      -webkit-transition: .4s;
+      transition: .4s;
+      }
+
+    .video-title{
+      position: absolute;
+      bottom: 0px;
+      left:0px;
+      line-height: 26px;
+      height: 26px;
+      font-size: 14px;
+      color: #fff;
+      width: 205px;
+      padding: 0px 8px;
+    }
+
+    .video-title-content{
+      position: relative;
+      /*文字溢出部分使用...代替
+      *需要配合overflow: hidden; 隐藏溢出部分
+      *white-space: nowrap; 禁止换行
+      */
+      text-overflow: ellipsis;
+      overflow: hidden;
+      text-align: left;
+      white-space: nowrap;
+      float: left;
+      width: 90px;
+    }
+
+    .view-content{
+      float: right;
+      position: relative;
+      text-align: center;
+      height: 26px;
+      line-height: 26px;
+      right:10px;
+    }
+
+    .icon-view{
+      position: relative;
+      text-align: center;
+      margin-right: 5px;
+    }
+
+    .ali-icon-play:before { font-size:28px;}
+
+    .icon-play{
+      position: absolute;
+      left:95px;
+      top:-60px;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="video-controller">
+      <a href="#">
+        <!--视频封面-->
+        <img src="java-ad.jpg" class="video-cover"/>
+        <span class="video-shadown"></span>
+        <!--播放图标-->
+        <span><i class="icon iconfont ali-icon-play icon-play"></i>  </span>
+        <!--视频标题-->
+        <span  class="video-title" title="解密java编程开发">
+          <!--视频名称-->
+          <span class="video-title-content">解密Java编程开发</span>
+          <!--观看量-->
+          <span class="view-content"><i class="icon iconfont ali-icon-view icon-view"></i><span class="view-counter">36.4w</span></span>
+        </span>
+      </a>
+    </div>
+  </body>
+  </html>
